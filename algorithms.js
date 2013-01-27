@@ -110,62 +110,44 @@ samples of words, it's the fastest of all three. The highest runtime I got was
 245 times for elements towards the end of the dictionary, nice! 
 */
 
-function lookupWordEulers(word) {
-  word = word.toLowerCase();
-  const STEP_SIZE = 1000;
+//Recursive Eulers algorithm to find the word
+function EulersRecursive(lowerbound, upperbound, word) {
 
-  var lower_bound = 0;
-  var upper_bound = STEP_SIZE;
-  var middle_bound = Math.floor((upper_bound - lower_bound) / 2);
+  var middlebound = Math.floor((upper_bound + lower_bound) / 2); //find the average and floor it for middle
+  if (middlebound == lowerbound) return false; //becaue floor, this means word will never be found
 
-  var lower_word = null;
-  var upper_word = null;
-  var middle_word = null;
+  if (!lookup(middlebound) || lookup(middlebound).toLowerCase() > word)
+    return EulersRecursive(lowerbound, middlebound, word) //if middle word is an overshoot;
 
-  // Infinite loops are bad :p
-  while(true) {
-    lower_word = lookup(lower_bound);
-    upper_word = lookup(upper_bound);
+  else if (lookup(middlebound).toLowerCase() < word)
+    return EulersRecursive(middlebound, upperbound, word);
 
-    // If the value if out of range, .toLowerCase() will fail
-    if(upper_word)
-      upper_word = upper_word.toLowerCase();
-    if(lower_word)
-      lower_word = lower_word.toLowerCase();
+  else
+    return middlebound;
+}
 
-    if(lower_word == word)
-      return lower_bound;
-    if(upper_word == word)
-      return upper_bound;
+//To find the upperbound of the dictionary
+function lookupWordEulersGallop(word) {
+  
+  if (!lookup(0)) return false; //if no words exist, ours doesn't either
 
-    if(upper_bound - lower_bound == 1) { // Word not found
-      return false;
-    }
+  word = word.toLowerCase; //for string compare to work
 
-    if(lower_word < word && (word < upper_word || !upper_word) ) {
-      middle_bound = Math.floor((lower_bound + upper_bound) / 2);
-      middle_word = lookup(middle_bound);
-
-      if(middle_word)
-        middle_word = middle_word.toLowerCase();
-      else { // the lookup was out of range
-        upper_bound = middle_bound;
-        continue;
-      }
-
-      if(middle_word == word)
-        return middle_bound;
-      else if(middle_word > word)
-        upper_bound = middle_bound;
-      else // assuming middle_word < word
-        lower_bound = middle_bound;
-
-    } else { // word > upper_word
-      /* Here we are trying a new range that is arbitrarily increased by STEP_SIZE.
-      I did some research after the fact by consulting my pears and Gallop search
-      can be used for increasing the bounds. */
-      lower_bound = upper_bound;
-      upper_bound = lower_bound + STEP_SIZE;
-    }
+  //instead of a step size of a 1000, use gallop search for O(logn) instead of O(n/1000)
+  var upper_bound = 1;
+  
+  var upper_bound_found = false;
+  while (lookup(upper_bound) && !upper_bound_found) { //if the dictionary is over, that's our upper bound
+    if (lookup(upper_bound).toLowerCase == word) //since our recursive depends on bounds being checked
+      return upper_bound; 
+    else if (lookup(upper_bound).toLowerCase > word) //this is our upper bound, kill the loop
+      upper_bound_found = true; 
+    else upper_bound *= 2; //try again with twice the test bound
   }
+
+  var lower_bound = Math.floor(upper_bound/2); //set the lower bound based on gallop search
+  if (lookup(lower_bound).toLowerCase == word) return lower_bound; //since our recursive depends on bounds being checked
+
+  //both lower and upper bound have been checked before sending it in
+  return EulersRecursive(lower_bound, upper_bound, word);
 }
