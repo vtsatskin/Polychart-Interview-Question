@@ -4,7 +4,8 @@ Saw this on vtsatskin's github and wanted to fork for some chanegs,
 made Euler's aglorithm into a recursive function,
 changed step by 1000 to gallop search
 
-Code not tested since i don't want to run JS, but logic should work
+Using the words file i have which goes to around 50,000 words I could never manually
+test the code to go upto more than 35 loops+recursions.
 
 
 
