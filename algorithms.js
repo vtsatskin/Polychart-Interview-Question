@@ -41,7 +41,13 @@ as long as n does not exceed the size of JavaScript integers, or your patience.
 Run times: O(n), o(c)
 */
 
-var word = 'wrong'
+var word = process.argv.splice(2).toString();
+if (!word) {
+  console.log();
+  console.log('Please spesify a word in the node arguments as "node algorithms.js word_here"');
+  return false;
+}
+
 
 console.log();
 console.log('looking for "' + word + '"');
@@ -60,10 +66,13 @@ function lookupWordBruteForce(word) {
   }
 
   // Word not found
+  console.log('it took ' + i + ' iterations in brute force');
   return false;
 }
 
-console.log ('brute force said ' + word + ' is at position ' + (lookupWordBruteForce(word)+1));
+var position = (lookupWordBruteForce(word));
+if (position) console.log('brute force said ' + word + ' is at position ' + (position+1));
+else console.log('brute force said ' + word + ' was not found');
 
 
 /*
@@ -127,7 +136,11 @@ function EulersRecursive(lowerbound, upperbound, word) {
   recursions++;
 
   var middlebound = Math.floor((upperbound + lowerbound) / 2); //find the average and floor it for middle
-  if (middlebound == lowerbound) return false; //because floor, this means word will never be found
+  
+  if (middlebound == lowerbound) {
+    console.log('Eulers method took ' + recursions + ' pass throughs.');
+    return false; //because floor, this means word will never be found
+  }
 
   if (!lookup(middlebound) || lookup(middlebound).toLowerCase() > word)
     return EulersRecursive(lowerbound, middlebound, word) //if middle word is an overshoot;
@@ -172,4 +185,6 @@ function lookupWordEulersGallop(word) {
   return EulersRecursive(lower_bound, upper_bound, word);
 }
 
-console.log('EulersGallop said ' + word + ' is at position ' + (lookupWordEulersGallop(word)+1));
+position = (lookupWordEulersGallop(word));
+if (position) console.log('EulersGallop said ' + word + ' is at position ' + (position+1));
+else console.log('EulersGallop said ' + word + ' was not found');
