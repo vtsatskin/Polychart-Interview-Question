@@ -131,22 +131,22 @@ function lookupWordEulersGallop(word) {
   
   if (!lookup(0)) return false; //if no words exist, ours doesn't either
 
-  word = word.toLowerCase; //for string compare to work
+  word = word.toLowerCase(); //for string compare to work
 
   //instead of a step size of a 1000, use gallop search for O(logn) instead of O(n/1000)
   var upper_bound = 1;
   
   var upper_bound_found = false;
   while (lookup(upper_bound) && !upper_bound_found) { //if the dictionary is over, that's our upper bound
-    if (lookup(upper_bound).toLowerCase == word) //since our recursive depends on bounds being checked
+    if (lookup(upper_bound).toLowerCase() == word) //since our recursive depends on bounds being checked
       return upper_bound; 
-    else if (lookup(upper_bound).toLowerCase > word) //this is our upper bound, kill the loop
+    else if (lookup(upper_bound).toLowerCase() > word) //this is our upper bound, kill the loop
       upper_bound_found = true; 
     else upper_bound *= 2; //try again with twice the test bound
   }
 
   var lower_bound = Math.floor(upper_bound/2); //set the lower bound based on gallop search
-  if (lookup(lower_bound).toLowerCase == word) return lower_bound; //since our recursive depends on bounds being checked
+  if (lookup(lower_bound).toLowerCase()) == word) return lower_bound; //since our recursive depends on bounds being checked
 
   //both lower and upper bound have been checked before sending it in
   return EulersRecursive(lower_bound, upper_bound, word);
