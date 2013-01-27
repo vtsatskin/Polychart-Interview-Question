@@ -17,7 +17,7 @@ I could have written some test cases, but that seemed a little bit of overkill
 Time spent: ~1h
 */
 
-const DICTIONARY_FILE = '/usr/share/dict/words';
+const DICTIONARY_FILE = '/words';
 
 var dictionary = [];
 
@@ -41,20 +41,30 @@ as long as n does not exceed the size of JavaScript integers, or your patience.
 Run times: O(n), o(c)
 */
 
+var word = 'wrong'
+
+console.log();
+console.log('looking for "' + word + '"');
+console.log();
+
 function lookupWordBruteForce(word) {
   var i = 0
     , result;
 
   while(result = lookup(i)) {
-    if(result == word)
+    if(result == word) {
+      console.log('it took ' + i + ' iterations in brute force');
       return i;
-
+    }
     ++i;
   }
 
   // Word not found
   return false;
 }
+
+console.log ('brute force said ' + word + ' is at position ' + (lookupWordBruteForce(word)+1));
+
 
 /*
 First we build a hash, which will have a runtime the same as the bruteforce method.
@@ -111,10 +121,13 @@ samples of words, it's the fastest of all three. The highest runtime I got was
 */
 
 //Recursive Eulers algorithm to find the word
+var recursions = 0;
 function EulersRecursive(lowerbound, upperbound, word) {
 
-  var middlebound = Math.floor((upper_bound + lower_bound) / 2); //find the average and floor it for middle
-  if (middlebound == lowerbound) return false; //becaue floor, this means word will never be found
+  recursions++;
+
+  var middlebound = Math.floor((upperbound + lowerbound) / 2); //find the average and floor it for middle
+  if (middlebound == lowerbound) return false; //because floor, this means word will never be found
 
   if (!lookup(middlebound) || lookup(middlebound).toLowerCase() > word)
     return EulersRecursive(lowerbound, middlebound, word) //if middle word is an overshoot;
@@ -122,8 +135,11 @@ function EulersRecursive(lowerbound, upperbound, word) {
   else if (lookup(middlebound).toLowerCase() < word)
     return EulersRecursive(middlebound, upperbound, word);
 
-  else
+  else {
+    console.log('Eulers method took ' + recursions + ' pass throughs.');
     return middlebound;
+  }
+    
 }
 
 //To find the upperbound of the dictionary
@@ -135,7 +151,7 @@ function lookupWordEulersGallop(word) {
 
   //instead of a step size of a 1000, use gallop search for O(logn) instead of O(n/1000)
   var upper_bound = 1;
-  
+  var tries = 0;
   var upper_bound_found = false;
   while (lookup(upper_bound) && !upper_bound_found) { //if the dictionary is over, that's our upper bound
     if (lookup(upper_bound).toLowerCase() == word) //since our recursive depends on bounds being checked
@@ -143,11 +159,17 @@ function lookupWordEulersGallop(word) {
     else if (lookup(upper_bound).toLowerCase() > word) //this is our upper bound, kill the loop
       upper_bound_found = true; 
     else upper_bound *= 2; //try again with twice the test bound
+    tries++;
   }
 
+  console.log();
+  console.log('upper bound of ' + upper_bound + ' found in ' + tries + ' gallops');
+
   var lower_bound = Math.floor(upper_bound/2); //set the lower bound based on gallop search
-  if (lookup(lower_bound).toLowerCase()) == word) return lower_bound; //since our recursive depends on bounds being checked
+  if (lookup(lower_bound).toLowerCase() == word) return lower_bound; //since our recursive depends on bounds being checked
 
   //both lower and upper bound have been checked before sending it in
   return EulersRecursive(lower_bound, upper_bound, word);
 }
+
+console.log('EulersGallop said ' + word + ' is at position ' + (lookupWordEulersGallop(word)+1));
