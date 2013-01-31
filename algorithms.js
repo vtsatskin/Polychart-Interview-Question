@@ -183,6 +183,7 @@ function lookupWordEulersGallop(word) {
 
   //both lower and upper bound have been checked before sending it in
   return EulersRecursive(lower_bound, upper_bound, word);
+  a
 }
 
 position = (lookupWordEulersGallop(word));
