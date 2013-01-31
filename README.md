@@ -1,3 +1,14 @@
+Mayank's Fork
+===========================
+Saw this on vtsatskin's github and wanted to fork for some chanegs,
+made Euler's aglorithm into a recursive function,
+changed step by 1000 to gallop search
+
+The maximum possible iterations are 2*log(n) which will be for a
+word that is at the end and does not exist, for example zzzzzzzz
+
+
+
 Polychart-Interview-Question
 ============================
 
